@@ -2,76 +2,35 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>zapcat</groupId>
-    <artifactId>zapcat</artifactId>
-    <version>1.4.0.0</version>
-    <packaging>jar</packaging>
+    <groupId>org.kjkoster</groupId>
+    <artifactId>zapcat-parent</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
 
-    <name>zapcat</name>
-    <description>Zabbix Agent</description>
+    <modules>
+        <module>zapcat-jar</module>
+        <module>openfire-jar</module>
+        <module>zapcat-war</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.version>1.4.0.0</project.version>
+        <javaversion>1.5</javaversion>
     </properties>
 
     <build>
-        <sourceDirectory>src</sourceDirectory>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
                 <configuration>
-                    <excludes>
-                        <exclude>**/org/jivesoftware/**</exclude>
-                        <exclude>**/org/kjkoster/zapcat/openfire/**</exclude>
-                    </excludes>
+                    <source>${javaversion}</source>
+                    <target>${javaversion}</target>
                 </configuration>
             </plugin>
         </plugins>
     </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.2</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.3</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>2.5.6</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.jamonapi</groupId>
-            <artifactId>jamon</artifactId>
-            <version>2.75</version>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
-
-    <repositories>
-        <repository>
-            <id>pink repo</id>
-            <url>http://bamboo.ps:8081/nexus/content/groups/public</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
 </project>
-

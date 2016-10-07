@@ -23,6 +23,8 @@
 	</description>
 
 	<property name="version" value="1.4.0.0" />
+	<property name="javaversion" value="1.5" />
+
 	<property name="jar" value="zapcat-${version}.jar" />
 	<property name="war" value="zapcat-${version}.war" />
 	<property name="of" value="zapcat-openfire-${version}.jar" />
@@ -34,11 +36,13 @@
 	<target name="distclean" description="clean build dir and generated libraries" depends="clean">
 		<delete failonerror="false" file="${jar}" />
 		<delete failonerror="false" file="${war}" />
+		<delete failonerror="false" file="${of}" />
 	</target>
 
 	<target name="jar" description="compile and jar the library" depends="clean">
 		<mkdir dir="build/jar" />
-		<javac destdir="build/jar" srcdir="src" debug="true">
+		<javac source="${javaversion}" target="${javaversion}" destdir="build/jar" srcdir="zapcat-jar/src" debug="true">
+			<compilerarg value="-Xlint:-options" />
 			<classpath>
 				<pathelement location="lib/log4j-1.2.15.jar" />
 				<pathelement location="lib/servlet-api.jar" />
@@ -48,13 +52,12 @@
 			</classpath>
 		</javac>
 
-		<!-- We don't need the Openfire stubs. The only serve to make our code compile. -->
-		<jar destfile="${jar}" basedir="build/jar" excludes="org/jivesoftware/**,org/kjkoster/zapcat/openfire/**" />
+		<jar destfile="${jar}" basedir="build/jar" />
 	</target>
 
 	<target name="war" description="build the war file" depends="jar">
 		<copy todir="build">
-			<fileset dir="." includes="webapp/**" />
+			<fileset dir="zapcat-war/src/main" includes="webapp/**" />
 		</copy>
 		<mkdir dir="build/webapp/WEB-INF/lib" />
 		<copy file="lib/log4j-1.2.15.jar" todir="build/webapp/WEB-INF/lib" />
@@ -70,6 +73,14 @@
 		<mkdir dir="build/zapcat/lib" />
 		<copy file="lib/log4j-1.2.15.jar" todir="build/zapcat/lib" />
 		<copy file="${jar}" todir="build/zapcat/lib" />
+
+		<javac source="${javaversion}" target="${javaversion}" destdir="build/zapcat" srcdir="openfire-jar/src" debug="true">
+		<compilerarg value="-Xlint:-options" />
+		<classpath>
+				<pathelement location="lib/log4j-1.2.15.jar" />
+				<pathelement location="${jar}" />
+			</classpath>
+		</javac>
 
 		<jar destfile="${of}" basedir="build/zapcat" />
 	</target>
