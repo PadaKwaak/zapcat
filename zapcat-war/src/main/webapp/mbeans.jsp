@@ -68,17 +68,17 @@ configuration, Tomcat versions and Tomcat configuration options.</p>
 </body>
 
 <%!private static String zabbixType(final String type) {
-        if (type.equals("java.lang.String")
-                || type.equals("javax.management.ObjectName")) {
+        if ("java.lang.String".equals(type)
+                || "javax.management.ObjectName".equals(type)) {
             return "character";
         }
-        if (type.equals("java.lang.Short") || type.equals("short")
-                || type.equals("java.lang.Integer") || type.equals("int")
-                || type.equals("java.lang.Long") || type.equals("long")) {
+        if ("java.lang.Short".equals(type) || "short".equals(type)
+                || "java.lang.Integer".equals(type) || "int".equals(type)
+                || "java.lang.Long".equals(type) || "long".equals(type)) {
             return "numeric (integer 64bit)";
         }
-        if (type.equals("java.lang.Float") || type.equals("float")
-                || type.equals("java.lang.Double") || type.equals("double")) {
+        if ("java.lang.Float".equals(type) || "float".equals(type)
+                || "java.lang.Double".equals(type) || "double".equals(type)) {
             return "numeric (float)";
         }
 
