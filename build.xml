@@ -22,7 +22,7 @@
 		Build the Zapcat library. You can even use this to run the sample programs.
 	</description>
 
-	<property name="version" value="1.3-beta" />
+	<property name="version" value="1.4.0.0" />
 	<property name="jar" value="zapcat-${version}.jar" />
 	<property name="war" value="zapcat-${version}.war" />
 	<property name="of" value="zapcat-openfire-${version}.jar" />
@@ -42,13 +42,14 @@
 			<classpath>
 				<pathelement location="lib/log4j-1.2.15.jar" />
 				<pathelement location="lib/servlet-api.jar" />
-				<pathelement location="lib/ostermillerutils_1_07_00.jar" />
 				<pathelement location="lib/junit-4.4.jar" />
+				<pathelement location="lib/jamon-2.75.jar" />
+				<pathelement location="lib/spring-2.5.6.jar" />
 			</classpath>
 		</javac>
 
 		<!-- We don't need the Openfire stubs. The only serve to make our code compile. -->
-		<jar destfile="${jar}" basedir="build/jar" excludes="org/jivesoftware/**" />
+		<jar destfile="${jar}" basedir="build/jar" excludes="org/jivesoftware/**,org/kjkoster/zapcat/openfire/**" />
 	</target>
 
 	<target name="war" description="build the war file" depends="jar">
@@ -112,7 +113,7 @@
 				<pathelement path="build/samples" />
 				<pathelement location="${jar}" />
 				<pathelement location="lib/log4j-1.2.15.jar" />
-				<pathelement location="lib/ostermillerutils_1_07_00.jar" />
+				<pathelement location="lib/jamon-2.75.jar" />
 			</classpath>
 		</java>
 	</target>
