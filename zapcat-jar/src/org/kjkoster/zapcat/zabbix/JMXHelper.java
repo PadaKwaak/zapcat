@@ -60,8 +60,10 @@ public final class JMXHelper {
 
     /**
      * Perform a JMX query given an mbean name and the name of an attribute on
-     * that mbean.
+     * that mbean, against a specific mbean server.
      * 
+     * @param mBeanServer
+     *            The mBean server instance.
      * @param objectName
      *            The object name of the mbean to query.
      * @param attribute
@@ -96,7 +98,30 @@ public final class JMXHelper {
                 objectName, attribute.substring(0, dot)), attribute
                 .substring(dot + 1));
     }
-    
+
+    /**
+     * Perform a JMX query given an mbean name and the name of an attribute on
+     * that mbean.
+     * 
+     * @param objectName
+     *            The object name of the mbean to query.
+     * @param attribute
+     *            The attribute to query for.
+     * @return The value of the attribute.
+     * @throws InstanceNotFoundException
+     *             When the specified mbean could not be located.
+     * @throws ReflectionException
+     *             When there was a problem inspecting the mbean.
+     * @throws MBeanException
+     *             When there was a problem inspecting the mbean.
+     * @throws AttributeNotFoundException
+     *             When the specified attribute could not be found.
+     */
+    public static String query(final ObjectName objectName, final String attribute)
+        throws InstanceNotFoundException, AttributeNotFoundException, MBeanException, ReflectionException {
+        return query(getMBeanServer(), objectName, attribute);
+    }
+
     /**
      * Invoke a JMX operation by providing the mbean name, the operation name and arguments.
      * 
