@@ -22,7 +22,7 @@
     <build>
         <sourceDirectory>src</sourceDirectory>
 
-        <finalName>../../zapcat-openfire-${project.version}</finalName>
+        <finalName>../../dist/zapcat-openfire-${project.version}</finalName>
 
         <resources>
             <resource>

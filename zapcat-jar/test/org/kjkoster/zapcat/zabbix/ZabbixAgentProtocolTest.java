@@ -1,4 +1,4 @@
-package org.kjkoster.zapcat.test;
+package org.kjkoster.zapcat.zabbix;
 
 /* This file is part of Zapcat.
  *
@@ -22,7 +22,6 @@ import org.apache.log4j.BasicConfigurator;
 import org.junit.After;
 import org.junit.Test;
 import org.kjkoster.zapcat.Agent;
-import org.kjkoster.zapcat.zabbix.ZabbixAgent;
 import org.springframework.jmx.export.MBeanExporter;
 
 import javax.management.MBeanServer;

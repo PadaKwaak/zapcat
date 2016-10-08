@@ -1,4 +1,4 @@
-package org.kjkoster.zapcat.test;
+package org.kjkoster.zapcat.zabbix;
 
 /* This file is part of Zapcat.
  *
@@ -20,8 +20,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kjkoster.zapcat.Agent;
-import org.kjkoster.zapcat.zabbix.JMXHelper;
-import org.kjkoster.zapcat.zabbix.ZabbixAgent;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.ObjectName;

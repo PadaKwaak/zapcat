@@ -94,8 +94,10 @@ public class Base64 {
     public static String splitLines(String string) {
         String lines = "";
         for (int i = 0; i < string.length(); i += splitLinesAt) {
+            if (i != 0) {
+                lines += "\r\n";
+            }
             lines += string.substring(i, Math.min(string.length(), i + splitLinesAt));
-            lines += "\r\n";
         }
         return lines;
     }

@@ -25,9 +25,14 @@
 	<property name="version" value="1.4.0.0" />
 	<property name="javaversion" value="1.5" />
 
-	<property name="jar" value="zapcat-${version}.jar" />
-	<property name="war" value="zapcat-${version}.war" />
-	<property name="of" value="zapcat-openfire-${version}.jar" />
+	<property name="test.src.dir" value="zapcat-jar/test" />
+	<property name="test.classes.dir" value="build/test-classes" />
+	<property name="classes.dir" value="build/jar" />
+	<property name="dist.dir" value="dist" />
+
+	<property name="jar" value="${dist.dir}/zapcat-${version}.jar" />
+	<property name="war" value="${dist.dir}/zapcat-${version}.war" />
+	<property name="of" value="${dist.dir}/zapcat-openfire-${version}.jar" />
 
 	<target name="clean" description="clean build dir">
 		<delete failonerror="false" dir="build" />
@@ -40,19 +45,30 @@
 	</target>
 
 	<target name="jar" description="compile and jar the library" depends="clean">
-		<mkdir dir="build/jar" />
-		<javac source="${javaversion}" target="${javaversion}" destdir="build/jar" srcdir="zapcat-jar/src" debug="true">
+		<mkdir dir="${classes.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<javac source="${javaversion}" target="${javaversion}" destdir="${classes.dir}" srcdir="zapcat-jar/src" debug="true">
 			<compilerarg value="-Xlint:-options" />
 			<classpath>
 				<pathelement location="lib/log4j-1.2.15.jar" />
 				<pathelement location="lib/servlet-api.jar" />
-				<pathelement location="lib/junit-4.4.jar" />
-				<pathelement location="lib/jamon-2.75.jar" />
-				<pathelement location="lib/spring-2.5.6.jar" />
 			</classpath>
 		</javac>
 
-		<jar destfile="${jar}" basedir="build/jar" />
+		<jar destfile="${jar}" basedir="${classes.dir}" />
+	</target>
+
+	<target name="compile-tests" depends="jar" description="Compile tests">
+		<mkdir dir="${test.classes.dir}"/>
+		<javac source="${javaversion}" target="${javaversion}" srcdir="${test.src.dir}" destdir="${test.classes.dir}" includeantruntime="false" debug="true">
+			<classpath>
+				<pathelement location="lib/log4j-1.2.15.jar" />
+				<pathelement location="lib/junit-4.8.2.jar" />
+				<pathelement location="lib/jamon-2.75.jar" />
+				<pathelement location="lib/spring-2.5.6.jar" />
+				<pathelement path="${classes.dir}"/>
+			</classpath>
+		</javac>
 	</target>
 
 	<target name="war" description="build the war file" depends="jar">
@@ -60,6 +76,7 @@
 			<fileset dir="zapcat-war/src/main" includes="webapp/**" />
 		</copy>
 		<mkdir dir="build/webapp/WEB-INF/lib" />
+		<mkdir dir="${dist.dir}" />
 		<copy file="lib/log4j-1.2.15.jar" todir="build/webapp/WEB-INF/lib" />
 		<copy file="${jar}" todir="build/webapp/WEB-INF/lib" />
 
@@ -70,6 +87,7 @@
 		<copy todir="build">
 			<fileset dir="openfire" includes="zapcat/**" />
 		</copy>
+		<mkdir dir="${dist.dir}" />
 		<mkdir dir="build/zapcat/lib" />
 		<copy file="lib/log4j-1.2.15.jar" todir="build/zapcat/lib" />
 		<copy file="${jar}" todir="build/zapcat/lib" />
@@ -85,7 +103,7 @@
 		<jar destfile="${of}" basedir="build/zapcat" />
 	</target>
 
-	<target name="all" description="compile the lot" depends="jar,war,of" />
+	<target name="all" description="compile the lot" depends="jar,war,of,compile-tests" />
 	
 	<target name="deploy_war" depends="war" description="Deploys war to application server deploy directory">
 		<fail unless="deploy.dir">deploy.dir not set</fail>
