@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import org.kjkoster.zapcat.util.XmlFormatter;
 import org.kjkoster.zapcat.zabbix.JMXHelper;
 import org.kjkoster.zapcat.zabbix.ZabbixAgent;
 
@@ -200,17 +201,9 @@ abstract class ZabbixTemplateServletBase extends HttpServlet {
         }
     }
 
-    String simpleXmlEscape(final ObjectName objectname) {
-        return simpleXmlEscape(objectname == null ? null : objectname.toString());
-    }
-
-    String simpleXmlEscape(final String value) {
-        return value == null ? null : value.replaceAll("\"", "\\\"");
-    }
-
     protected void writeItem(final PrintWriter out, final String description, final ObjectName objectname, final String attribute, final Type type, final String units, final Store store, final Time time) {
-        out.println("        <item type=\"0\" key=\"jmx[" + simpleXmlEscape(objectname) + "][" + simpleXmlEscape(attribute) + "]\" value_type=\"" + type.getValue() + "\">");
-        out.println("          <description>" + description + "</description>");
+        out.println("        <item type=\"0\" key=\"jmx[" + XmlFormatter.escape(objectname) + "][" + XmlFormatter.escape(attribute) + "]\" value_type=\"" + type.getValue() + "\">");
+        out.println("          <description>" + XmlFormatter.escape(description) + "</description>");
         out.println("          <delay>" + time.getValue() + "</delay>");
         out.println("          <history>90</history>");
         out.println("          <trends>365</trends>");
@@ -252,8 +245,8 @@ abstract class ZabbixTemplateServletBase extends HttpServlet {
 
     protected void writeTrigger(final PrintWriter out, final String description, final String expression, final int priority) {
         out.println("        <trigger>");
-        out.println("          <description>" + description + "</description>");
-        out.println("          <expression>" + expression + "</expression>");
+        out.println("          <description>" + XmlFormatter.escape(description) + "</description>");
+        out.println("          <expression>" + XmlFormatter.escape(expression) + "</expression>");
         out.println("          <priority>" + priority + "</priority>");
         out.println("        </trigger>");
     }
@@ -280,25 +273,25 @@ abstract class ZabbixTemplateServletBase extends HttpServlet {
     }
 
     protected void writeGraph(final PrintWriter out, final String name, final ObjectName objectname, final String redAttribute, final String greenAttribute, final String blueAttribute) {
-        out.println("        <graph name=\"" + name + "\" width=\"900\" height=\"200\">");
+        out.println("        <graph name=\"" + XmlFormatter.escape(name) + "\" width=\"900\" height=\"200\">");
         out.println("          <show_work_period>1</show_work_period>");
         out.println("          <show_triggers>1</show_triggers>");
         out.println("          <yaxismin>0.0000</yaxismin>");
         out.println("          <yaxismax>100.0000</yaxismax>");
         out.println("          <graph_elements>");
-        out.println("            <graph_element item=\"{HOSTNAME}:jmx[" + objectname + "][" + redAttribute + "]\">");
+        out.println("            <graph_element item=\"{HOSTNAME}:jmx[" + XmlFormatter.escape(objectname) + "][" + redAttribute + "]\">");
         out.println("              <color>990000</color>");
         out.println("              <yaxisside>1</yaxisside>");
         out.println("              <calc_fnc>2</calc_fnc>");
         out.println("              <periods_cnt>5</periods_cnt>");
         out.println("            </graph_element>");
-        out.println("            <graph_element item=\"{HOSTNAME}:jmx[" + objectname + "][" + greenAttribute + "]\">");
+        out.println("            <graph_element item=\"{HOSTNAME}:jmx[" + XmlFormatter.escape(objectname) + "][" + greenAttribute + "]\">");
         out.println("              <color>009900</color>");
         out.println("              <yaxisside>1</yaxisside>");
         out.println("              <calc_fnc>2</calc_fnc>");
         out.println("              <periods_cnt>5</periods_cnt>");
         out.println("            </graph_element>");
-        out.println("            <graph_element item=\"{HOSTNAME}:jmx[" + objectname + "][" + blueAttribute + "]\">");
+        out.println("            <graph_element item=\"{HOSTNAME}:jmx[" + XmlFormatter.escape(objectname) + "][" + blueAttribute + "]\">");
         out.println("              <color>000099</color>");
         out.println("              <yaxisside>1</yaxisside>");
         out.println("              <calc_fnc>2</calc_fnc>");
@@ -310,9 +303,25 @@ abstract class ZabbixTemplateServletBase extends HttpServlet {
 
     protected String path(final ObjectName objectname) {
         final String name = objectname.toString();
-        final int start = name.indexOf("path=") + 5;
-        final int end = name.indexOf(',', start);
-        return name.substring(start, end);
+        final int start;
+        int pos = getPos(name, "path=");
+        if (pos != -1) {
+            start = pos;
+        } else {
+            pos = getPos(name, "context=");
+            if (pos != -1) {
+                start = pos;
+            } else {
+                start = 0;
+            }
+        }
+        final int end = name.indexOf(',', start + 1);
+        return name.substring(start, end == -1 ? name.length() : end);
+    }
+
+    protected int getPos(final String value, final String searchString) {
+        final int pos = value.indexOf(searchString);
+        return pos == -1 ? -1 : (pos + searchString.length());
     }
 
     protected String name(final ObjectName objectname) {
